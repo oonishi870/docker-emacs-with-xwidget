@@ -39,6 +39,7 @@ WORKDIR /root/emacs-29.1/
 RUN ./autogen.sh
 RUN CFLAGS='-I/usr/lib/gcc/x86_64-linux-gnu/10/include -L/usr/lib/gcc/x86_64-linux-gnu/10' ./configure --with-native-compilation --without-pop --with-xwidgets --with-imagemagick --with-pgtk
 RUN make
+RUN make install
 
 FROM ubuntu:24.04
 
@@ -50,7 +51,7 @@ RUN apt update && apt install -y  \
     libgtk-3-0                    \
     libx11-6                      \
     libjpeg8                      \
-    libcgif0                      \
+    libgif7                       \
     libtiff6                      \
     libgnutls30                   \
     librsvg2-2                    \
@@ -66,16 +67,25 @@ RUN apt update && apt install -y  \
     libsqlite3-0                  \
     libwebkit2gtk-4.1-0           \
     libmagickwand-6.q16-7t64      \
-    make                          \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential               \
+    libgccjit-10-dev              \
+    libwebpdecoder3               \
+    libglib2.0-bin                \
+    && apt-get clean
+    
+#    && rm -rf /var/lib/apt/lists/*
+# RUN rm -rf /var/lib/apt/lists/*
 
-
+# RUN apt install -y libgccjit-10-dev
+# RUN apt install -y libwebpdecoder3
+# RUN apt install -y libglib2.0-bin
 
 RUN --mount=type=bind,from=builder,source=/root/emacs-29.1,target=/root/emacs-29.1 \
     cd /root/emacs-29.1/ \
     && make install 
 
 ENTRYPOINT ["emacs"]
+
 
 # RUN apt install -y emacs-mozc-bin  emacs-mozc
 # RUN apt install -y fcitx5-mozc

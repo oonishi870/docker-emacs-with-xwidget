@@ -2,11 +2,11 @@
 
 ```bash
 
-docker build -t test/emacs .
+docker build -t my/emacs .
 ```
 
 ```bash
-
+xhost +
 docker run -it --rm --name emacs-test   \
        -v /tmp/.X11-unix:/tmp/.X11-unix \
        -v /tmp/.XIM-unix:/tmp/.XIM-unix \
@@ -24,10 +24,7 @@ docker run -it --rm --name emacs-test   \
        --workdir=$(pwd)                 \
        --network=host                   \
        --user $(id -u):$(id -g)         \
-       test/emacs emacs
+       my/emacs
 ```
 
-```bash
 
-docker build --target=builder -t test/emacs-devel .
-```
